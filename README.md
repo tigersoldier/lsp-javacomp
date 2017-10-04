@@ -48,3 +48,7 @@ candidates. The default key binding is `C-M-i`.
 ```elisp
 (push 'company-capf company-backends)
 ```
+
+[company-mode]: http://company-mode.github.io/
+[javacomp]: https://github.com/tigersoldier/JavaComp
+[lsp-mode]: https://github.com/emacs-lsp/lsp-mode
