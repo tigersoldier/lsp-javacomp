@@ -60,12 +60,5 @@ The current directory is assumed to be the java project’s root otherwise."
 			 :ignore-regexps '("^SLF4J: "
 					   "^Listening for transport dt_socket at address: "))
 
-;;;###autoload
-(defun lsp-javacomp-mode ()
-  "Toggles `lsp-mode'. Use this autoload funtion to make sure
-lsp-javacomp is defined before `lsp-mode' is called."
-  (lsp-mode))
-
-
 (provide 'lsp-javacomp)
 ;;; lsp-javacomp.el ends here

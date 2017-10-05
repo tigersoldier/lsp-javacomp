@@ -8,19 +8,12 @@ and other IDE features for Emacs. It's backed by [JavaComp][javacomp].
 ### Enable lsp-javacomp
 
 ```elisp
-(require 'lsp-javacomp)
+; Make sure lsp-javacomp is loaded when lsp-mode is used so that the JavaComp 
+; LSP handler is installed.
+(with-eval-after-load 'lsp-mode
+  (require 'lsp-javacomp))
+; Enable lsp-mode for java-mode
 (add-hook 'java-mode-hook 'lsp-mode)
-```
-
-Alternatively, you can lazily load it using `use-package`:
-
-```elisp
-(use-package lsp-javacomp
-  :defer t
-  :commands (lsp-javacomp-mode)
-  :init
-  (progn
-    (add-hook 'java-mode-hook 'lsp-javacomp-mode)))
 ```
 
 ### Specify the Jar location of of JavaComp
