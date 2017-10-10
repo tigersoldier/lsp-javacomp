@@ -1,3 +1,5 @@
+[![MELPA](https://melpa.org/packages/lsp-javacomp-badge.svg)](https://melpa.org/#/lsp-javacomp)
+
 # Emacs Language Server client backed by [JavaComp][javacomp]
 
 lsp-javacomp is a [lsp-mode][lsp-mode] client that provides Java code-completion
