@@ -29,7 +29,7 @@ Then you can use `M-x package-install` to install lsp-javacomp. After installing
 add the snippet below to your `.emacs` file to enable it for `java-mode`:
 
 ```elisp
-; Make sure lsp-javacomp is loaded when lsp-mode is used so that the JavaComp 
+; Make sure lsp-javacomp is loaded when lsp-mode is used so that the JavaComp
 ; LSP handler is installed.
 (with-eval-after-load 'lsp-mode
   (require 'lsp-javacomp))
@@ -37,15 +37,18 @@ add the snippet below to your `.emacs` file to enable it for `java-mode`:
 (add-hook 'java-mode-hook 'lsp-mode)
 ```
 
-### Specify the Jar location of of JavaComp
+### Install/Update JavaComp server
 
-Build or download the jar file from [JavaComp website][javacomp].
+After installing lsp-javacomp to your Emacs, you can use `M-x
+lsp-javacomp-install-server` to install the JavaComp server.
 
-Set `lsp-javacomp-server-jar` to the path to the jar file:
+If you want to update to the latest version of JavaComp, you can use `M-x
+lsp-javacomp-update-server`.
 
-```elisp
-(setq lsp-javacomp-server-jar "path/to/JavaComp.jar")
-```
+Alternatively, you can build or download the jar file manually. You must rename
+the jar file to `javacomp.jar` and put it into the directory specified by the
+`lsp-javacomp-server-install-dir` variable. The default value of
+`lsp-javacomp-server-install-dir` is `~/.emacs.d/javacomp/`.
 
 ### Complete using `completion-at-point`
 
