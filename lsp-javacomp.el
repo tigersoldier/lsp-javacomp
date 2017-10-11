@@ -1,7 +1,7 @@
-;;; lsp-javacomp.el --- Java support for lsp-mode
+;;; lsp-javacomp.el --- Provide Java IDE features powered by JavaComp.
 
 ;; Version: 1.0
-;; Package-Requires: ((emacs "25.1") (lsp-mode "2.0") (s))
+;; Package-Requires: ((emacs "25.1") (lsp-mode "2.0") (s "1.2.0"))
 ;; Keywords: java
 ;; URL: https://github.com/tigersoldier/lsp-javacomp
 
@@ -81,7 +81,10 @@ The current directory is assumed to be the java project’s root otherwise."
 
 ;;;###autoload
 (defun lsp-javacomp-install-server (&optional prompt-exists)
-  "Download the JavaComp server JAR file if it does not exist."
+  "Download the JavaComp server JAR file if it does not exist.
+
+If PROMPT-EXISTS is non-nil, show a message if the server jar
+file already exists."
   (interactive '(t))
   (let ((jar-file (lsp-javacomp--server-jar-path)))
     (if (file-exists-p jar-file)
@@ -100,6 +103,8 @@ The current directory is assumed to be the java project’s root otherwise."
 (defun lsp-javacomp--latest-release-callback (stats)
   "Handle the `url-retrive' callback for JavaComp latest release request.
 
+STATS is passed by `url-retrieve'.
+
 See https://developer.github.com/v3/repos/releases/#get-the-latest-release
 "
   (search-forward "\n\n")
@@ -117,7 +122,7 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release
             (message "Found JavaComp %s, downloading..." release-version)
             (make-directory (expand-file-name lsp-javacomp-server-install-dir) t)
             (url-copy-file jar-url (lsp-javacomp--server-jar-path) t))
-        (error "Fail to get the URL of the JavaComp server.")))))
+        (error "Fail to get the URL of the JavaComp server")))))
 
 (lsp-define-stdio-client 'java-mode "javacomp" 'stdio #'lsp-javacomp--get-root
 			 "JavaComp Server"
