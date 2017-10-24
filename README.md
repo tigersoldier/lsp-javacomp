@@ -9,34 +9,16 @@ and other IDE features for Emacs. It's backed by [JavaComp][javacomp].
 
 ### Enable lsp-javacomp
 
-lsp-javacomp is avaliable on [MELPA]. It's recommended to install the package from it.
+lsp-javacomp is available on [MELPA]. To install it, first [setup
+MELPA][setup-melpa], then <kbd>M-x</kbd> `package-install` <kbd>RET</kbd>
+`company-lsp` <kbd>RET</kbd>.
 
-You need to add MELPA to your `package-archives` list. Add the snippet below to
-your `.emacs` file.
-
-```elisp
-; Setup MELPA. Copied from https://melpa.org/#/getting-started
-(require 'package) ;; You might already have this line
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
-```
-
-Then you can use `M-x package-install` to install lsp-javacomp. After installing it,
-add the snippet below to your `.emacs` file to enable it for `java-mode`:
+After installing it, add the snippet below to your `.emacs` file to enable it
+for `java-mode`:
 
 ```elisp
-; Make sure lsp-javacomp is loaded when lsp-mode is used so that the JavaComp
-; LSP handler is installed.
-(with-eval-after-load 'lsp-mode
-  (require 'lsp-javacomp))
-; Enable lsp-mode for java-mode
-(add-hook 'java-mode-hook 'lsp-mode)
+(require 'lsp-javacomp)
+(add-hook 'java-mode-hook #'lsp-javacomp-enable)
 ```
 
 ### Install/Update JavaComp server
@@ -71,4 +53,5 @@ candidates. The default key binding is `C-M-i`.
 [company-mode]: http://company-mode.github.io/
 [javacomp]: https://github.com/tigersoldier/JavaComp
 [lsp-mode]: https://github.com/emacs-lsp/lsp-mode
-[melpa]: https://melpa.org/
+[melpa]: https://melpa.org
+[setup-melpa]: https://melpa.org/#/getting-started
