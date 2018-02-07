@@ -79,6 +79,20 @@ The current directory is assumed to be the java project’s root otherwise."
         (or (seq-some (lambda (file) (locate-dominating-file default-directory file)) project-types)
             default-directory))))))
 
+(defun lsp-javacomp--get-prefix ()
+  "Get prefix for completion.
+
+Return a cons of (start . end) for the bound of the prefix."
+  (let* ((bound (bounds-of-thing-at-point 'symbol))
+         (start (or (and bound (car bound)) (point)))
+         (end (or (and bound (cdr bound)) (point))))
+    ;; java-mode considers '@' as a symbol constituent. However JavaComp doesn't
+    ;; take the leading '@' as part of the prefix. Remove the leading '@' from
+    ;; the prefix.
+    (when (and (< start end) (char-equal (char-after start) ?@))
+      (setq start (1+ start)))
+    (cons start end)))
+
 ;;;###autoload
 (defun lsp-javacomp-install-server (&optional prompt-exists)
   "Download the JavaComp server JAR file if it does not exist.
@@ -127,7 +141,8 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release
 (lsp-define-stdio-client lsp-javacomp "java" #'lsp-javacomp--get-root nil
                          :command-fn #'lsp-javacomp--command
                          :ignore-regexps '("^SLF4J: "
-                                           "^Listening for transport dt_socket at address: "))
+                                           "^Listening for transport dt_socket at address: ")
+                         :prefix-function #'lsp-javacomp--get-prefix)
 
 (provide 'lsp-javacomp)
 ;;; lsp-javacomp.el ends here
