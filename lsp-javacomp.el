@@ -73,6 +73,7 @@ Requires to be ended with a slash."
 The current directory is assumed to be the java project’s root otherwise."
   (expand-file-name
    (cond
+    ((locate-dominating-file default-directory "javacomp.json"))
     ((and (featurep 'projectile) (projectile-project-p)) (projectile-project-root))
     ((vc-backend default-directory) (vc-root-dir))
     (t (let ((project-types '("pom.xml" "build.gradle" ".project" "WORKSPACE")))
