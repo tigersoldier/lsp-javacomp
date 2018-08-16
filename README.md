@@ -43,7 +43,7 @@ lazy-loading company-lsp, make sure it's loaded before calling
               (set (make-variable-buffer-local 'company-minimum-prefix-length) 1)))
   ;; Optional, make sure JavaComp is installed. See below.
   :config
-  (lsp-javacomp-install-server)))
+  (lsp-javacomp-install-server))
 ```
 
 ### Install/Update JavaComp server
