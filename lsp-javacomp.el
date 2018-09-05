@@ -184,7 +184,8 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release"
                          :command-fn #'lsp-javacomp--command
                          :ignore-regexps '("^SLF4J: "
                                            "^Listening for transport dt_socket at address: ")
-                         :extra-init-params #'lsp-javacomp--get-init-params)
+                         :extra-init-params #'lsp-javacomp--get-init-params
+                         :prefix-function #'lsp-javacomp--get-prefix)
 
 (provide 'lsp-javacomp)
 ;;; lsp-javacomp.el ends here
