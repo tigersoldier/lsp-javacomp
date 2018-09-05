@@ -67,6 +67,19 @@ implemented by lsp-mode.
 Run `M-x completion-at-point` in a .java file buffer to get completion
 candidates. The default key binding is `C-M-i`.
 
+### Customizing JavaComp server behavior
+
+You can provide initialization options to JavaComp by setting the following
+variables:
+
+* `lsp-javacomp-server-log-path`
+* `lsp-javacomp-server-log-level`
+* `lsp-javacomp-server-ignore-paths`
+* `lsp-javacomp-server-type-index-files`
+
+If there is `javacomp.json` file in the project root, the corresponding options
+will be overridden if specified in the `javacomp.json` file.
+
 [company-lsp]: http://https://github.com/tigersoldier/company-lsp/
 [javacomp]: https://github.com/tigersoldier/JavaComp
 [lsp-mode]: https://github.com/emacs-lsp/lsp-mode
