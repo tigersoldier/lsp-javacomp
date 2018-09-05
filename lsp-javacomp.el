@@ -2,7 +2,7 @@
 
 ;; Version: 1.0
 ;; Package-Requires: ((emacs "25.1") (lsp-mode "3.0") (s "1.2.0"))
-;; Keywords: java
+;; Keywords: java tools lsp
 ;; URL: https://github.com/tigersoldier/lsp-javacomp
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -52,6 +52,40 @@ Requires to be ended with a slash."
   :type '(set string)
   :group 'lsp-javacomp)
 
+(defcustom lsp-javacomp-server-log-level nil
+  "Server log level.
+This option sets the value of the logLevel initialization option.
+Possible values are \"severe\", \"warning\", \"info\", \"fine\",
+\"finer\", \"finest\". If it's set to nil, the option is not sent
+to the server."
+  :type '(choice
+          (const nil)
+          (const "severe")
+          (const "warning")
+          (const "info")
+          (const "fine")
+          (const "finer")
+          (const "finest"))
+  :group 'lsp-javacomp)
+
+(defcustom lsp-javacomp-server-log-path nil
+  "Server log path.
+This option sets the value of the logPath initialization option."
+  :type '(choice (const nil) string)
+  :group 'lsp-javacomp)
+
+(defcustom lsp-javacomp-server-ignore-paths nil
+  "A list of string paths to be ignored by the server.
+This option sets the value of the ignorePaths initialization option."
+  :type '(repeat string)
+  :group 'lsp-javacomp)
+
+(defcustom lsp-javacomp-server-type-index-files nil
+  "A list of string paths of the type index files.
+This option sets the value of the typeIndexFiles initialization option."
+  :type '(repeat string)
+  :group 'lsp-javacomp)
+
 (defconst lsp-javacomp-latest-release-url
   "https://api.github.com/repos/tigersoldier/JavaComp/releases/latest"
   "URL to retrieve the latest release of JavaComp server.")
@@ -79,6 +113,27 @@ The current directory is assumed to be the java project’s root otherwise."
         (or (seq-some (lambda (file) (locate-dominating-file default-directory file)) project-types)
             default-directory))))))
 
+(defun lsp-javacomp--get-prefix ()
+  "Get prefix for completion.
+
+Return a cons of (start . end) for the bound of the prefix."
+  (let* ((bound (bounds-of-thing-at-point 'symbol))
+         (start (or (and bound (car bound)) (point)))
+         (end (or (and bound (cdr bound)) (point))))
+    ;; java-mode considers '@' as a symbol constituent. However JavaComp doesn't
+    ;; take the leading '@' as part of the prefix. Remove the leading '@' from
+    ;; the prefix.
+    (when (and (< start end) (char-equal (char-after start) ?@))
+      (setq start (1+ start)))
+    (cons start end)))
+
+(defun lsp-javacomp--get-init-params (_)
+  "Return initialization options."
+  (list :logPath lsp-javacomp-server-log-path
+        :logLevel lsp-javacomp-server-log-level
+        :ignorePths lsp-javacomp-server-ignore-paths
+        :typeIndexFiles lsp-javacomp-server-type-index-files))
+
 ;;;###autoload
 (defun lsp-javacomp-install-server (&optional prompt-exists)
   "Download the JavaComp server JAR file if it does not exist.
@@ -93,10 +148,12 @@ file already exists."
 
 ;;;###autoload
 (defun lsp-javacomp-update-server ()
+  "Update JavaComp jar file to the latest version."
   (interactive)
   (lsp-javacomp--download-server))
 
 (defun lsp-javacomp--download-server ()
+  "Download latest JavaComp jar file."
   (message "Getting the latest JavaComp server...")
   (url-retrieve lsp-javacomp-latest-release-url #'lsp-javacomp--latest-release-callback))
 
@@ -105,8 +162,7 @@ file already exists."
 
 STATS is passed by `url-retrieve'.
 
-See https://developer.github.com/v3/repos/releases/#get-the-latest-release
-"
+See https://developer.github.com/v3/repos/releases/#get-the-latest-release"
   (search-forward "\n\n")
   (if-let (err (plist-get stats :error))
       (error "Failed to get the latest release of JavaComp server: %s" (car err))
@@ -127,7 +183,8 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release
 (lsp-define-stdio-client lsp-javacomp "java" #'lsp-javacomp--get-root nil
                          :command-fn #'lsp-javacomp--command
                          :ignore-regexps '("^SLF4J: "
-                                           "^Listening for transport dt_socket at address: "))
+                                           "^Listening for transport dt_socket at address: ")
+                         :extra-init-params #'lsp-javacomp--get-init-params)
 
 (provide 'lsp-javacomp)
 ;;; lsp-javacomp.el ends here
