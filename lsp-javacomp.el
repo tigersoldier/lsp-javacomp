@@ -192,7 +192,7 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release"
       (erase-buffer)
       (insert snapshot-content)
       (java-mode))
-    (display-buffer-use-some-window buffer nil))
+    (display-buffer-use-some-window buffer nil)))
 
 (lsp-define-stdio-client lsp-javacomp "java" #'lsp-javacomp--get-root nil
                          :command-fn #'lsp-javacomp--command
