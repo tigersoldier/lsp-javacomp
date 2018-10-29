@@ -181,6 +181,19 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release"
             (url-copy-file jar-url (lsp-javacomp--server-jar-path) t))
         (error "Fail to get the URL of the JavaComp server")))))
 
+(defun lsp-javacomp-document-content ()
+  (interactive)
+  (let* ((document-content (lsp-send-request (lsp-make-request
+                                              "$JavaComp/documentContent"
+                                              `(:uri ,(lsp--buffer-uri)))))
+         (snapshot-content (gethash "snapshotContent" document-content))
+         (buffer (get-buffer-create "*JavaComp document content*")))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (insert snapshot-content)
+      (java-mode))
+    (display-buffer-use-some-window buffer nil))
+
 (lsp-define-stdio-client lsp-javacomp "java" #'lsp-javacomp--get-root nil
                          :command-fn #'lsp-javacomp--command
                          :ignore-regexps '("^SLF4J: "
