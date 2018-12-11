@@ -101,18 +101,14 @@ This option sets the value of the typeIndexFiles initialization option."
      "-jar"
      ,(lsp-javacomp--server-jar-path)))
 
-(defun lsp-javacomp--get-root ()
-  "Retrieves the root directory of the java project root if available.
-
-The current directory is assumed to be the java project’s root otherwise."
-  (expand-file-name
-   (cond
-    ((locate-dominating-file default-directory "javacomp.json"))
-    ((and (featurep 'projectile) (projectile-project-p)) (projectile-project-root))
-    ((vc-backend default-directory) (vc-root-dir))
-    (t (let ((project-types '("pom.xml" "build.gradle" ".project" "WORKSPACE")))
-        (or (seq-some (lambda (file) (locate-dominating-file default-directory file)) project-types)
-            default-directory))))))
+(defun lsp-javacomp--suggest-root ()
+  "Retrieves the root directory of the java project root based on some well-known project files."
+  (when (memq major-mode '(java-mode))
+    (let ((project-files '("javacomp.json" "pom.xml" "build.gradle" ".project" "WORKSPACE")))
+      (when-let ((root (seq-some (lambda (file)
+                                   (locate-dominating-file default-directory file))
+                                 project-files)))
+        (expand-file-name root)))))
 
 (defun lsp-javacomp--get-prefix ()
   "Get prefix for completion.
@@ -128,7 +124,7 @@ Return a cons of (start . end) for the bound of the prefix."
       (setq start (1+ start)))
     (cons start end)))
 
-(defun lsp-javacomp--get-init-params (_)
+(defun lsp-javacomp--get-init-params ()
   "Return initialization options."
   (list :logPath lsp-javacomp-server-log-path
         :logLevel lsp-javacomp-server-log-level
@@ -194,11 +190,18 @@ See https://developer.github.com/v3/repos/releases/#get-the-latest-release"
       (java-mode))
     (display-buffer-use-some-window buffer nil)))
 
-(lsp-define-stdio-client lsp-javacomp "java" #'lsp-javacomp--get-root nil
-                         :command-fn #'lsp-javacomp--command
-                         :ignore-regexps '("^SLF4J: "
-                                           "^Listening for transport dt_socket at address: ")
-                         :extra-init-params #'lsp-javacomp--get-init-params)
+(advice-add 'lsp--suggest-project-root :before-until #'lsp-javacomp--suggest-root)
+
+(lsp-register-client
+ (make-lsp-client
+  :new-connection (lsp-stdio-connection #'lsp-javacomp--command)
+  :major-modes '(java-mode)
+  :server-id 'javacomp
+  :multi-root nil
+  :initialization-options #'lsp-javacomp--get-init-params
+  :ignore-regexps '("^SLF4J: "
+                    "^Listening for transport dt_socket at address: ")
+  :library-folders-fn nil))
 
 (provide 'lsp-javacomp)
 ;;; lsp-javacomp.el ends here
