@@ -28,14 +28,13 @@ lazy-loading company-lsp, make sure it's loaded before calling
 
 ```elisp
 (use-package lsp-javacomp
-  :commands lsp-javacomp-enable
   :init
   (add-hook 'java-mode-hook
             (lambda ()
-              ;; Load company-lsp before enabling lsp-javacomp, so that function
-              ;; parameter snippet works.
-              (require 'company-lsp)
-              (lsp-javacomp-enable)
+              ;; Load lsp-javacomp before enabling lsp, so that javacomp client
+              ;; is registed.
+              (require 'lsp-javacomp')
+              (lsp)
               ;; Use company-lsp as the company completion backend
               (set (make-variable-buffer-local 'company-backends) '(company-lsp))
               ;; Optional company-mode settings

@@ -35,6 +35,8 @@
 (require 'json)
 (require 's)
 
+(defalias 'lsp-javacomp-enable 'lsp)
+
 (defcustom lsp-javacomp-server-install-dir (locate-user-emacs-file "javacomp/")
   "Install directory for JavaComp server.
 Requires to be ended with a slash."
