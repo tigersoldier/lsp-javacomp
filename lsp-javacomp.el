@@ -130,7 +130,7 @@ Return a cons of (start . end) for the bound of the prefix."
   "Return initialization options."
   (list :logPath lsp-javacomp-server-log-path
         :logLevel lsp-javacomp-server-log-level
-        :ignorePths lsp-javacomp-server-ignore-paths
+        :ignorePaths lsp-javacomp-server-ignore-paths
         :typeIndexFiles lsp-javacomp-server-type-index-files))
 
 ;;;###autoload
