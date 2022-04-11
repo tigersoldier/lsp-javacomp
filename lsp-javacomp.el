@@ -79,13 +79,13 @@ This option sets the value of the logPath initialization option."
 (defcustom lsp-javacomp-server-ignore-paths nil
   "A list of string paths to be ignored by the server.
 This option sets the value of the ignorePaths initialization option."
-  :type '(repeat string)
+  :type 'lsp-string-vector
   :group 'lsp-javacomp)
 
 (defcustom lsp-javacomp-server-type-index-files nil
   "A list of string paths of the type index files.
 This option sets the value of the typeIndexFiles initialization option."
-  :type '(repeat string)
+  :type 'lsp-string-vector 
   :group 'lsp-javacomp)
 
 (defconst lsp-javacomp-latest-release-url
@@ -131,7 +131,9 @@ Return a cons of (start . end) for the bound of the prefix."
   (list :logPath lsp-javacomp-server-log-path
         :logLevel lsp-javacomp-server-log-level
         :ignorePaths lsp-javacomp-server-ignore-paths
-        :typeIndexFiles lsp-javacomp-server-type-index-files))
+        :typeIndexFiles lsp-javacomp-server-type-index-files
+        )
+  )
 
 ;;;###autoload
 (defun lsp-javacomp-install-server (&optional prompt-exists)
